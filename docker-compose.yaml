@@ -1,0 +1,38 @@
+services:
+  api:
+    build: ./services/api
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+    ports:
+      - "8080:8080"
+    networks:
+      - frontend
+
+  worker:
+    build: ./services/worker
+    environment:
+      - DB_USER=${POSTGRES_USER}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PASSWORS=${POSTGRES_PASSWORD}
+      - DB_HOST=postgres-service
+    networks:
+      - backend
+      - frontend
+
+  postgres-service:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - backend
+    volumes:
+      - data:/var/lib/psql/data
+
+volumes:
+  data:
+
+networks:
+  - frontend
+  - backend
