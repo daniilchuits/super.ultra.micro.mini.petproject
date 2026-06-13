@@ -3,7 +3,7 @@ WORKDIR /services/worker
 COPY go.mod .
 RUN go mod download
 COPY . .
-RUN go build -o app
+RUN CGO=ENABLED GOOS=linux go build -o app main.go
 
 FROM gcr.io/distroless/static-debian12
 WORKDIR /services/worker

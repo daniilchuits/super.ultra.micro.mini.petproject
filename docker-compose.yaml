@@ -13,13 +13,31 @@ services:
     environment:
       - DB_USER=${POSTGRES_USER}
       - DB_NAME=${POSTGRES_DB}
-      - DB_PASSWORS=${POSTGRES_PASSWORD}
-      - DB_HOST=postgres-service
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=jobs_postgres
+    depends_on:
+      jobs-postgres:
+        condition: service_healthy
     networks:
       - backend
       - frontend
 
-  postgres-service:
+  auth-service:
+    build: ./services/auth
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+      - DB_USER=${POSTGRES_USER_FOR_AUTH}
+      - DB_NAME=${POSTGRES_DB_FOR_AUTH}
+      - DB_PASSWORD=${POSTGRES_PASSWORD_FOR_AUTH}
+      - DB_HOST=users_postgres
+    depends_on:
+      users-postgres:
+        condition: service_healthy
+    networks:
+      - backend
+      - frontend
+
+  jobs-postgres:
     image: postgres:17
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -27,12 +45,36 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     networks:
       - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
     volumes:
-      - data:/var/lib/psql/data
+      - data:/var/lib/postgresql/data
+
+  users-postgres:
+    image: postgres:17
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER_FOR_AUTH}
+      - POSTGRES_DB=${POSTGRES_DB_FOR_AUTH}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_FOR_AUTH}
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB_FOR_AUTH} -U ${POSTGRES_USER_FOR_AUTH}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - users:/var/lib/postgresql/data
 
 volumes:
   data:
+  users:
 
 networks:
-  - frontend
-  - backend
+  frontend:
+  backend:
