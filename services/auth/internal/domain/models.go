@@ -5,3 +5,8 @@ type Credentials struct {
 	Login    string
 	Password string
 }
+
+type RegisteredData struct {
+	Id       int
+	Password string
+}

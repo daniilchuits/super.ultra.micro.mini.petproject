@@ -41,16 +41,20 @@ func main() {
 		return
 	}
 
+	secretKey := os.Getenv("JWT_SECRET")
+
 	repoManager := usersrepo.NewRepoManager(db)
 
 	getNote := repoManager
 	insertNote := repoManager
 
 	registerHandler := handlers.NewRegisterHandler(getNote, insertNote)
+	loginHandler := handlers.NewLoginHandler(getNote, secretKey)
 
 	r := chi.NewRouter()
 
 	r.Post("/register", registerHandler.RegisterUser)
+	r.Post("/login", loginHandler.LoginUser)
 
 	//register
 	//login

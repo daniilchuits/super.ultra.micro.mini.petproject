@@ -1,8 +1,11 @@
 package usersrepo
 
-import "log"
+import (
+	"auth/internal/domain"
+	"log"
+)
 
-func (repo repoManager) GetOneNote(login string) (string, bool, error) {
+func (repo repoManager) GetOneNote(login string) (*domain.RegisteredData, bool, error) {
 
 	query := `
 		SELECT EXISTS (
@@ -12,22 +15,28 @@ func (repo repoManager) GetOneNote(login string) (string, bool, error) {
 
 	var exists bool
 	if err := repo.db.QueryRow(query, login).Scan(&exists); err != nil {
-		return "", false, err
+		return nil, false, err
 	}
 	if !exists {
-		return "", false, nil
+		return nil, false, nil
 	}
 
 	query = `
-	SELECT password FROM users WHERE login=$1
+	SELECT id, password FROM users WHERE login=$1
 	`
 
-	var password string
+	var (
+		id       int
+		password string
+	)
 
-	err := repo.db.QueryRow(query, login).Scan(&password)
+	err := repo.db.QueryRow(query, login).Scan(&id, &password)
 	if err != nil {
 		log.Println(err)
-		return "", true, err
+		return nil, true, err
 	}
-	return password, true, err
+	return &domain.RegisteredData{
+		Id:       id,
+		Password: password,
+	}, true, err
 }

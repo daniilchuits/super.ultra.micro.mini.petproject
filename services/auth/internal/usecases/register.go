@@ -20,5 +20,10 @@ func (uc UsecaseToRegister) RegisterUser(credentials domain.Credentials) (*domai
 		return nil, domain.ErrUserExists
 	}
 
-	return uc.InsertOneNote.InsertIntoUsers(credentials.Login, credentials.Password)
+	hashedPassword, err := domain.CreateHashedPassword(credentials.Password)
+	if err != nil {
+		return nil, domain.ErrMakingHashedPassword
+	}
+
+	return uc.InsertOneNote.InsertIntoUsers(credentials.Login, hashedPassword)
 }
