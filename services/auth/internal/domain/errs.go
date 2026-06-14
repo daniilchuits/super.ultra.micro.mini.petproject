@@ -15,4 +15,8 @@ var (
 
 	// makingHashedPassword
 	ErrMakingHashedPassword error = errors.New("Error making HashedPassword")
+
+	// validate
+	ErrShortLogin    error = errors.New("Short login, must be at least 6 symbols")
+	ErrShortPassword error = errors.New("Short password, must be at least 6 symbols")
 )

@@ -7,12 +7,16 @@ import (
 )
 
 type LoginUsecase struct {
-	CheckPassword interfaces.InterfaceToGetOneNote
+	GetNote interfaces.InterfaceToGetOneNote
 }
 
-func (uc LoginUsecase) LoginUser(login, password, secret string) (string, error) {
+func (uc LoginUsecase) LoginUser(credentials domain.Credentials, secret string) (string, error) {
 
-	registeredData, exists, err := uc.CheckPassword.GetOneNote(login)
+	if err := domain.Validate(credentials); err != nil {
+		return "", err
+	}
+
+	registeredData, exists, err := uc.GetNote.GetOneNote(credentials.Login)
 	if err != nil {
 		log.Println(err)
 		return "", err
@@ -21,7 +25,7 @@ func (uc LoginUsecase) LoginUser(login, password, secret string) (string, error)
 		return "", domain.ErrUserIsNotRegisteres
 	}
 
-	if err = domain.CompareWithHashedPassword(registeredData.Password, password); err != nil {
+	if err = domain.CompareWithHashedPassword(registeredData.Password, credentials.Password); err != nil {
 		return "", domain.ErrWrongPassword
 	}
 

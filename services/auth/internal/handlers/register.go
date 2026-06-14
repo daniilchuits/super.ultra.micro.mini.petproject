@@ -48,6 +48,12 @@ func (reg registerHandler) RegisterUser(w http.ResponseWriter, r *http.Request) 
 		} else if errors.Is(err, domain.ErrDuringInsertingToUsers) {
 			http.Error(w, domain.ErrDuringInsertingToUsers.Error(), 500)
 			return
+		} else if errors.Is(err, domain.ErrShortLogin) {
+			http.Error(w, domain.ErrShortLogin.Error(), 400)
+			return
+		} else if errors.Is(err, domain.ErrShortPassword) {
+			http.Error(w, domain.ErrShortPassword.Error(), 400)
+			return
 		}
 
 		log.Println(err)

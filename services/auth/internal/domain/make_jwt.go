@@ -12,7 +12,7 @@ func MakingJWT(id int, secret string) (string, error) {
 	token := jwt.NewWithClaims(
 		jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"exp":     time.Now().Add(2 * time.Hour),
+			"exp":     time.Now().Add(2 * time.Hour).Unix(),
 			"user_id": id,
 		})
 	jwt, err := token.SignedString([]byte(secret))

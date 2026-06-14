@@ -22,7 +22,7 @@ func NewLoginHandler(
 ) loginHandler {
 	return loginHandler{
 		uc: usecases.LoginUsecase{
-			CheckPassword: getNote,
+			GetNote: getNote,
 		},
 		secretKey: secretKey,
 	}
@@ -39,7 +39,7 @@ func (login loginHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	domainCred := transport.ImportToDomain(cred)
 
-	jwt, err := login.uc.LoginUser(domainCred.Login, domainCred.Password, login.secretKey)
+	jwt, err := login.uc.LoginUser(domainCred, login.secretKey)
 	if err != nil {
 
 		if errors.Is(err, domain.ErrUserIsNotRegisteres) {
@@ -50,6 +50,12 @@ func (login loginHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 			return
 		} else if errors.Is(err, domain.ErrMakingJWT) {
 			http.Error(w, domain.ErrMakingJWT.Error(), 500)
+			return
+		} else if errors.Is(err, domain.ErrShortLogin) {
+			http.Error(w, domain.ErrShortLogin.Error(), 400)
+			return
+		} else if errors.Is(err, domain.ErrShortPassword) {
+			http.Error(w, domain.ErrShortPassword.Error(), 400)
 			return
 		}
 

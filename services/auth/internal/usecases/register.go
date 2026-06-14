@@ -12,6 +12,10 @@ type UsecaseToRegister struct {
 
 func (uc UsecaseToRegister) RegisterUser(credentials domain.Credentials) (*domain.Credentials, error) {
 
+	if err := domain.Validate(credentials); err != nil {
+		return nil, err
+	}
+
 	_, exists, err := uc.ExistsInUsers.GetOneNote(credentials.Login)
 	if err != nil {
 		return nil, domain.ErrDuringCheckingExistance
