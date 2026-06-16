@@ -4,7 +4,7 @@ import "errors"
 
 var (
 	// POST jobs
-	ErrNoteInPendingStatus     error = errors.New("File is already in pending status")
+	ErrNoteInPendingStatus     error = errors.New("File is already in pending status or done")
 	ErrDuringCheckingExistence error = errors.New("Error during checking existence")
 	ErrDuringInsertingNote     error = errors.New("Error during inserting note")
 
