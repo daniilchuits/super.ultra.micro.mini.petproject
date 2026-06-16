@@ -7,9 +7,14 @@ type Filename struct {
 }
 
 type Note struct {
-	Id        int
-	UserId    int
-	File      string
-	Status    string
-	CreatedAt time.Time
+	Id           int
+	UserId       int
+	File         string
+	Status       string
+	LinesCount   *int
+	WordsCount   *int
+	CharsCount   *int
+	ErrorMessage *string
+	CreatedAt    time.Time
+	ProcessedAt  *time.Time
 }

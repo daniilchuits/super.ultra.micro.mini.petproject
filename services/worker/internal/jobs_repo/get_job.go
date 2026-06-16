@@ -5,10 +5,20 @@ import (
 	"worker/internal/domain"
 )
 
-func (repo repoManager) GetJob(note_id, user_id int) (*domain.Note, error) {
+func (repo *repoManager) GetJob(note_id, user_id int) (*domain.Note, error) {
 
 	query := `
-	SELECT *
+	SELECT 
+		id,
+		user_id,
+		filename,
+		status,
+		lines_count,
+		words_count,
+		chars_count,
+		error_mesage,
+		created_at,
+		processed_at
 	FROM jobs
 	WHERE id=$1
 		AND user_id=$2
@@ -21,7 +31,12 @@ func (repo repoManager) GetJob(note_id, user_id int) (*domain.Note, error) {
 		&note.UserId,
 		&note.File,
 		&note.Status,
+		&note.LinesCount,
+		&note.WordsCount,
+		&note.CharsCount,
+		&note.ErrorMessage,
 		&note.CreatedAt,
+		&note.ProcessedAt,
 	)
 
 	if err != nil {

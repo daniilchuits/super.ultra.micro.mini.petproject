@@ -18,13 +18,13 @@ type getOneNoteHandler struct {
 	uc usecases.GetJobUsecase
 }
 
-func NewGetOneNoteHandler(getJob interfaces.GetJobInterface) getOneNoteHandler {
-	return getOneNoteHandler{uc: usecases.GetJobUsecase{
+func NewGetOneNoteHandler(getJob interfaces.GetJobInterface) *getOneNoteHandler {
+	return &getOneNoteHandler{uc: usecases.GetJobUsecase{
 		GetJob: getJob,
 	}}
 }
 
-func (get getOneNoteHandler) GetOneJob(w http.ResponseWriter, r *http.Request) {
+func (get *getOneNoteHandler) GetOneJob(w http.ResponseWriter, r *http.Request) {
 
 	noteIdStr := chi.URLParam(r, "id")
 	noteId, err := strconv.Atoi(noteIdStr)

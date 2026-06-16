@@ -10,5 +10,5 @@ type GetJobUsecase struct {
 }
 
 func (gj GetJobUsecase) GetJobById(note_id, user_id int) (*domain.Note, error) {
-	return gj.GetJobById(note_id, user_id)
+	return gj.GetJob.GetJob(note_id, user_id)
 }

@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"worker/database"
+	goworker "worker/internal/go_worker"
 	"worker/internal/handlers"
 	jobsrepo "worker/internal/jobs_repo"
 
@@ -44,27 +45,37 @@ func main() {
 		return
 	}
 
+	wd, _ := os.Getwd()
+	fmt.Println(wd)
+
 	repoManager := jobsrepo.NewRepoManager(db)
 
 	check := repoManager
 	insert := repoManager
 	getJobs := repoManager
-	// getJob := repoManager
+	getJob := repoManager
+	update := repoManager
+
+	chooseForGoWorker := repoManager
+	updForGoWorker := repoManager
+
+	goWorker := goworker.NewGoWorker(chooseForGoWorker, updForGoWorker)
+
+	go goWorker.Process()
 
 	postJobHandler := handlers.NewPostJobHandler(check, insert)
 	getJobsHandler := handlers.NewGetJobHandler(getJobs)
-	// getJobHandler := handlers.NewGetOneNoteHandler(getJob)
+	getJobHandler := handlers.NewGetOneNoteHandler(getJob)
+	updateHandler := handlers.NewUpdateHandler(check, update, getJob)
 
 	r := chi.NewRouter()
 
 	r.Post("/jobs", postJobHandler.PostNote)
 	r.Get("/jobs", getJobsHandler.GetJobs)
-	// r.Get("/jobs/{id}", getJobHandler.GetOneJob)
-	// POST /upload
+	r.Get("/jobs/{id}", getJobHandler.GetOneJob)
+	r.Post("/upload", updateHandler.UpdateFile)
 
-	r.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("worker ok"))
-	}) // endpoints for worker
-
-	log.Fatal(http.ListenAndServe(":8082", r)) // zachekinil, works ok, do handlers
+	log.Fatal(http.ListenAndServe(":8082", r))
+	// вроде все, опять же, при тестах выявится много багов, сейчас напишу ридми,
+	// хезе пока как его писать... ну разберемся
 }

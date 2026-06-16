@@ -19,14 +19,14 @@ type postJobHandler struct {
 func NewPostJobHandler(
 	check interfaces.CheckExistence,
 	post interfaces.PostNote,
-) postJobHandler {
-	return postJobHandler{uc: usecases.PostJobUsecase{
+) *postJobHandler {
+	return &postJobHandler{uc: usecases.PostJobUsecase{
 		CheckExistence:  check,
 		InsertInterface: post,
 	}}
 }
 
-func (post postJobHandler) PostNote(w http.ResponseWriter, r *http.Request) {
+func (post *postJobHandler) PostNote(w http.ResponseWriter, r *http.Request) {
 
 	userIDStr := r.Header.Get("user_id")
 	userID, err := strconv.Atoi(userIDStr)
@@ -54,7 +54,7 @@ func (post postJobHandler) PostNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	noteDomain, err := post.uc.PostUsecase(userID, filenameDomain.Name)
+	noteDomain, err := post.uc.PostUsecase(userID, filenameDomain)
 	if err != nil {
 
 		if errors.Is(err, domain.ErrNoteInPendingStatus) {

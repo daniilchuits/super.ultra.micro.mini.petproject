@@ -21,6 +21,8 @@ services:
     networks:
       - backend
       - frontend
+    volumes:
+      - ./files_test:/services/worker/files_test
 
   auth-service:
     build: ./services/auth

@@ -5,10 +5,22 @@ import (
 	"worker/internal/domain"
 )
 
-func (repo repoManager) Get(user_id int) (*[]domain.Note, error) {
+func (repo *repoManager) Get(user_id int) (*[]domain.Note, error) {
 
 	query := `
-		SELECT * FROM jobs WHERE user_id=$1
+		SELECT 
+			id,
+			user_id,
+			filename,
+			status,
+			lines_count,
+			words_count,
+			chars_count,
+			error_mesage,
+			created_at,
+			processed_at
+		FROM jobs 
+		WHERE user_id=$1
 	`
 
 	rows, err := repo.db.Query(query, user_id)
@@ -28,7 +40,12 @@ func (repo repoManager) Get(user_id int) (*[]domain.Note, error) {
 			&note.UserId,
 			&note.File,
 			&note.Status,
+			&note.LinesCount,
+			&note.WordsCount,
+			&note.CharsCount,
+			&note.ErrorMessage,
 			&note.CreatedAt,
+			&note.ProcessedAt,
 		); err != nil {
 			log.Println("Error during scaning one note:", err)
 			return nil, domain.ErrScaningJobs

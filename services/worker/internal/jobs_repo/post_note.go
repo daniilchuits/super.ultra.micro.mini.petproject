@@ -2,12 +2,12 @@ package jobsrepo
 
 import "worker/internal/domain"
 
-func (repo repoManager) Post(user_id int, filename string) (*domain.Note, error) {
+func (repo *repoManager) Post(user_id int, filename string) (*domain.Note, error) {
 
 	query := `
 		INSERT INTO jobs (user_id, filename, status) VALUES
 		($1,$2,$3)
-		RETURNING *
+		RETURNING id, user_id, filename, status, created_at
 	`
 
 	var note domain.Note

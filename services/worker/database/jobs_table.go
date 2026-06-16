@@ -18,9 +18,16 @@ func (manager dbManager) CreateJobsTable() error {
 			user_id INT,
 			filename TEXT NOT NULL,
 			status TEXT NOT NULL,
-			created_at TIMESTAMP DEFAULT now()
+			lines_count INT,
+			words_count INT,
+			chars_count INT,
+			error_mesage TEXT,
+			created_at TIMESTAMP DEFAULT now(),
+			processed_at TIMESTAMP
 		)
 	`
+
+	// to late i saw that wrote 'error_mesage' :D so much to update, so pofig
 
 	_, err := manager.db.Exec(query)
 	return err

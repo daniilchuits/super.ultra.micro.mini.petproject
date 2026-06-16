@@ -11,9 +11,9 @@ type PostJobUsecase struct {
 	InsertInterface interfaces.PostNote
 }
 
-func (post PostJobUsecase) PostUsecase(user_id int, filename string) (*domain.Note, error) {
+func (post PostJobUsecase) PostUsecase(user_id int, filename domain.Filename) (*domain.Note, error) {
 
-	exists, err := post.CheckExistence.CheckExistence(user_id, filename)
+	exists, _, err := post.CheckExistence.CheckExistence(user_id, filename.Name)
 
 	if err != nil {
 		log.Println("Err checking existence:", err)
@@ -24,7 +24,7 @@ func (post PostJobUsecase) PostUsecase(user_id int, filename string) (*domain.No
 		return nil, domain.ErrNoteInPendingStatus
 	}
 
-	note, err := post.InsertInterface.Post(user_id, filename)
+	note, err := post.InsertInterface.Post(user_id, filename.Name)
 	if err != nil {
 		log.Println(err)
 		return nil, domain.ErrDuringInsertingNote

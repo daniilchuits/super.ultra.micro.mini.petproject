@@ -16,13 +16,13 @@ type getJobsHandler struct {
 	uc usecases.GetJobs
 }
 
-func NewGetJobHandler(get interfaces.GetJobs) getJobsHandler {
-	return getJobsHandler{uc: usecases.GetJobs{
+func NewGetJobHandler(get interfaces.GetJobs) *getJobsHandler {
+	return &getJobsHandler{uc: usecases.GetJobs{
 		GetInt: get,
 	}}
 }
 
-func (get getJobsHandler) GetJobs(w http.ResponseWriter, r *http.Request) {
+func (get *getJobsHandler) GetJobs(w http.ResponseWriter, r *http.Request) {
 
 	userIdStr := r.Header.Get("user_id")
 	userId, err := strconv.Atoi(userIdStr)
