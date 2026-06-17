@@ -11,15 +11,22 @@
 - логирование ошибок
 
 ## Архитектура
+```text
 Client
-↓
-Api
-↓
-Auth-service
-↓
-Worker-service
-↓
-Postgresql
+  |
+  v
+Gateway
+  |
+  +--> Auth Service
+  |       |
+  |       v
+  |   PostgreSQL
+  |
+  +--> Worker Service
+          |
+          v
+      PostgreSQL
+```
 
 ## Запуск
 1. Клонировать репозиторий `git clone <repo-url> <your-path>`
@@ -27,16 +34,15 @@ Postgresql
 3. Запустить `docker compose up --build`
 
 Переменные окружения используются только в docker-compose.yaml, вот они:
-`POSTGRES_USER=...`
-`POSTGRES_DB=...`
-`POSTGRES_PASSWORD=...`
-
-`POSTGRES_USER_FOR_AUTH=...`
-`POSTGRES_DB_FOR_AUTH=...`
-`POSTGRES_PASSWORD_FOR_AUTH=...`
-
-`JWT_SECRET=...`
-
+```text
+POSTGRES_USER=...
+POSTGRES_DB=...
+POSTGRES_PASSWORD=...
+POSTGRES_USER_FOR_AUTH=...
+POSTGRES_DB_FOR_AUTH=...
+POSTGRES_PASSWORD_FOR_AUTH=...
+JWT_SECRET=...
+```
 ## API
 порт используется 8080
 
