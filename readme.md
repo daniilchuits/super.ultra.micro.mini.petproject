@@ -4,7 +4,7 @@
 
 ## Возможности
 - создание задач для дальнейшего выполнения 
-- асинхронная (типо) обработка worker'ом
+- асинхронная обработка worker'ом
 - хранение результатов в POSTGRESQL
 - аутентификация с помощью JWT-token'а
 - запуск с помощью Docker Compose 
@@ -12,13 +12,13 @@
 
 ## Архитектура
 Client
-|
+↓
 Api
-|
+↓
 Auth-service
-|
+↓
 Worker-service
-|
+↓
 Postgresql
 
 ## Запуск
@@ -27,15 +27,15 @@ Postgresql
 3. Запустить `docker compose up --build`
 
 Переменные окружения используются только в docker-compose.yaml, вот они:
-POSTGRES_USER=...
-POSTGRES_DB=...
-POSTGRES_PASSWORD=...
+`POSTGRES_USER=...`
+`POSTGRES_DB=...`
+`POSTGRES_PASSWORD=...`
 
-POSTGRES_USER_FOR_AUTH=...
-POSTGRES_DB_FOR_AUTH=...
-POSTGRES_PASSWORD_FOR_AUTH=...
+`POSTGRES_USER_FOR_AUTH=...`
+`POSTGRES_DB_FOR_AUTH=...`
+`POSTGRES_PASSWORD_FOR_AUTH=...`
 
-JWT_SECRET=...
+`JWT_SECRET=...`
 
 ## API
 порт используется 8080
@@ -50,7 +50,12 @@ JWT_SECRET=...
     "password": "123456" (пароль >= 6 символов)
 }
 
-В ответе при успешном логине, получаешь jwt-token. Он длится 2 часа и его необходимо прикрепить к запросу в headers. В postman'е проще всего выбрать "Authorization". Там в "Auth Type" выбираем "Bearer token" и вставляем свой токен вида `zxc.qwe.123`.
+В ответе при успешном логине, получаешь jwt-token. Он длится 2 часа и его необходимо прикрепить к запросу в headers. 
+Пример заголовка:
+```http
+Authorization: Bearer <jwt-token>
+```
+
 После этого к каждому запросу в заголовки устанавливается токен.
 Токен длится 2 часа!
 В токене содержится время, до которого он валиден и ID пользователя, которое берется из таблицы со всеми регистрациями.
